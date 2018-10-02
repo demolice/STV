@@ -19,8 +19,7 @@ public class Startup {
     private static String readExpressionText() {
         System.out.print("Zadejte algebraický výraz: ");
         Scanner scanner = new Scanner(System.in);
-        String expressionText = scanner.next();
-        return expressionText;
+        return scanner.nextLine();
     }
 
     private static void printExpressionResult(int result) {
@@ -43,15 +42,51 @@ public class Startup {
     }
 
     private static int computeExpression(String expressionText) throws NumberFormatException {
-        String numberText = "";
+
         ArrayList<Integer> numbers = new ArrayList();
         ArrayList<Character> operators = new ArrayList();
+        
+        parseExpressionText(expressionText, numbers, operators);
 
-       
+        int result = evaluateExpressionSet(numbers, operators);
+
+        return result;
+    }
+
+    private static int evaluateExpressionSet(ArrayList<Integer> numbers, ArrayList<Character> operators) {
+        int result = 0;
+        for (int index = 0; index < numbers.size(); index++) {
+            if (index == 0) {
+                result = numbers.get(index);
+            } else {
+                char operator = operators.get(index - 1);
+                int operand = numbers.get(index);
+
+                switch (operator) {
+                    case '+':
+                        result += operand;
+                        break;
+                    case '-':
+                        result -= operand;
+                        break;
+                    case '*':
+                        result *= operand;
+                        break;
+                    case '/':
+                        result /= operand;
+                        break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private static void parseExpressionText(String expressionText, ArrayList<Integer> numbers, ArrayList<Character> operators) throws NumberFormatException {
+        String numberText = "";
         for (int index = 0; index < expressionText.length(); index++) {
-
+            
             char symbol = expressionText.charAt(index);
-
+            
             if (isDigit(symbol)) {
                 numberText += symbol;
             } else if (isOperator(symbol)) {
@@ -60,17 +95,12 @@ public class Startup {
                 operators.add(symbol);
                 numberText = "";
             } else {
-                System.out.println("Zadanný znak " + symbol + " není valdiní,"
+                System.out.println("Zadanný znak \"" + symbol + "\" není valdiní,"
                         + "zkus to prosím znovu.");
             }
-        }     
+        }
+        
         int number = Integer.valueOf(numberText);
         numbers.add(number);
-        
-        int result = 0;
-        
-        // TODO: copute result
-        
-        return result;
     }
 }
