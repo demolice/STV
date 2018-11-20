@@ -5,7 +5,6 @@
  */
 package mine.sweeper.GameLogic.Graphics;
 
-
 import java.awt.Graphics;
 
 import java.util.ArrayList;
@@ -23,16 +22,57 @@ public class Control {
 
     private Canvas c;
     private GraphicsContext g;
-    private static final Color bc = Color.GRAY;
+    private static final Color bc = Color.WHITE;
+    private Piece[][] pieces;
+    
+    private double widht;
+    private double height;
+    
+    private double cellWidht;
+    private double cellHeight;
+    
+    private double cellWidthLenght;
+    private double cellHeightLenght;
 
     public Control(Canvas c) {
         this.c = c;
         this.g = c.getGraphicsContext2D();
+        this.widht = c.getWidth();
+        this.height = c.getHeight();
     }
 
     public void paint() {
+        clearCanvas();
+        drawBackground();
+        drawGrid();
+    }
+
+    public void drawMines() {
         
-        g.fillOval(100, 100, 100, 100);
+
+    }
+    
+    private void drawGrid() {
+        g.setStroke(Color.BLACK);
+        g.setLineWidth(2);
+        
+        for (int x = 0; x <= cellWidthLenght; x++) {
+                g.strokeLine(x * cellWidht, 0, x * cellWidht, height);
+        }
+        
+        for (int y = 0; y <= cellHeightLenght; y++) {
+                g.strokeLine(0, y * cellHeight, widht, y * cellHeight);
+        }
+    }
+    
+    public void setPieces(Piece[][] pieces) {
+        this.pieces = pieces;
+        
+        cellWidthLenght = pieces.length;
+        cellHeightLenght = pieces[0].length;
+        
+        cellWidht = widht / cellWidthLenght;
+        cellHeight = height / cellHeightLenght;
     }
 
     public void clearCanvas() {
@@ -40,7 +80,7 @@ public class Control {
     }
 
     private void drawBackground() {
-        g.setFill(Color.BLACK);
-
+        g.setFill(bc);
+        g.fillRect(0, 0, c.getWidth(), c.getHeight());
     }
 }

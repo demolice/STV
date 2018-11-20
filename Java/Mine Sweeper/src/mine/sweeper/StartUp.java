@@ -32,7 +32,6 @@ public class StartUp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Game g = new Game(32, 32, Game.EASY);
         launch(args);
     }  
 }

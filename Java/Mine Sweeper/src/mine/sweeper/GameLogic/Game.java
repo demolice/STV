@@ -26,7 +26,9 @@ public class Game {
     private final int width;
     private final int height;
     private final double dificulty;
-    private final ArrayList<Piece> pieces = new ArrayList();
+    
+    
+    private Piece[][] pieces;
 
     public Game(int width, int height, double dificulty) {
         this.width = width;
@@ -34,59 +36,23 @@ public class Game {
         this.dificulty = dificulty;
         generateNewGame();
     }
-
-    private void generateNewGame() {
-
+    
+    public void canvasClick(double x, double y) {
+        
     }
 
-    public void draw(Canvas canvas) {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        
-
-        double canvasWidth = canvas.getWidth();
-        double canvasHeight = canvas.getHeight();
-
-        double cellWidth = canvasWidth / width;
-        double cellHeight = canvasHeight / height;
-
-        for (Piece piece : pieces) {
-            double cellX = cellWidth * piece.getX() + cellWidth / 2;
-            double cellY = cellHeight * piece.getY() + cellHeight / 2;
-
-            //gc.setFill(Color.BLUE);
-            //gc.fillRect(cellX, cellY, cellWidth, cellHeight);
-            if (piece.isBomb()) {
-
-                gc.setFill(Color.RED);
-
-                gc.fillRect(cellX, cellY, cellWidth, cellHeight);
-            }
-
-        }
-
+    private void generateNewGame() {
+        pieces = new Piece[width][height];
     }
 
     public void shuffle(int pieceCount) {
-        clearField();
-        Random r = new Random();
-
-        for (int index = 0; index < pieceCount; index++) {
-            int x = r.nextInt(width);
-            int y = r.nextInt(height);
-            boolean isBomb = r.nextBoolean();
-
-            //PieceType type = (isCross ? PieceType.Cross : PieceType.Oval
-            Piece piece = new Piece(x, y, isBomb);
-
-            boolean alreadyCreated = pieces.contains(piece);
-
-            if (!alreadyCreated) {
-                pieces.add(piece);
-            }
-        }
     }
 
     public void clearField() {
-        pieces.clear();
+        pieces = new Piece[width][height];
+    }
+    
+    public Piece[][] getPieces() {
+        return pieces;
     }
 }

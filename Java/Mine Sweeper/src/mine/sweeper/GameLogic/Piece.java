@@ -11,6 +11,7 @@ package mine.sweeper.GameLogic;
  */
 public class Piece {
     private final boolean isBomb;
+    private boolean isOpen =  false;
     private int numberOfBombs = 0;
     private int x;
     private int y;
@@ -65,6 +66,14 @@ public class Piece {
         Piece p = (Piece) o;
         
         return (this.x == p.x && this.y == p.y && this.isBomb == p.isBomb);
+    }
+
+    public void setIsOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public boolean isIsOpen() {
+        return isOpen;
     }
 
     @Override
