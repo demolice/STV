@@ -42,7 +42,6 @@ public class Control {
     }
 
     public void paint() {
-        clearCanvas();
         drawBackground();
         drawGrid();
     }
@@ -50,6 +49,10 @@ public class Control {
     public void drawMines() {
         
 
+    }
+    
+    private void updatePieces() {
+        pieces = Game.getPieces();
     }
     
     private void drawGrid() {

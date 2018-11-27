@@ -26,6 +26,8 @@ public class Piece {
         return isBomb;
     }
     
+    
+    
     public int getNumberOfBombs() {
         return numberOfBombs;
     }

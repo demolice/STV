@@ -12,9 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javax.swing.JPanel;
 import mine.sweeper.GameLogic.Game;
 import mine.sweeper.GameLogic.Graphics.Control;
 
@@ -26,7 +24,7 @@ public class MainFormControllerController implements Initializable {
     
     //javafx scene builder 2
 
-    private Game game = new Game(10, 10, Game.EASY);
+    private  Game game = new Game(10, 10, Game.NORMAL);
     private static Control c;
 
 
@@ -38,7 +36,6 @@ public class MainFormControllerController implements Initializable {
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
-        game.shuffle(20);
         c.clearCanvas();
         c.paint();
     }
@@ -51,8 +48,8 @@ public class MainFormControllerController implements Initializable {
     }
 
     @FXML
-    private void handleButtonAction(MouseEvent event) {
-        game.canvasClick(event.getX(), event.getY());
+    private void handleMouseClicked(MouseEvent event) {
+        game.canvasClick(event.getX() / mainCanvas.getWidth(), event.getY() / mainCanvas.getHeight());
     }
 
 }

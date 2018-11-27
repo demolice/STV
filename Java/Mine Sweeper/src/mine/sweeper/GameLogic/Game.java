@@ -25,34 +25,57 @@ public class Game {
 
     private final int width;
     private final int height;
-    private final double dificulty;
+    private final double difficulty;
     
     
-    private Piece[][] pieces;
+    private static Piece[][] pieces;
 
     public Game(int width, int height, double dificulty) {
         this.width = width;
         this.height = height;
-        this.dificulty = dificulty;
+        this.difficulty = dificulty;
         generateNewGame();
     }
     
     public void canvasClick(double x, double y) {
+        int ax = (int) (x * 10);
+        int ay = (int) (y * 10);
+
+        System.out.println("You have chosen tile x: " + ax + " y: " + ay);
+        System.out.println("And this tile is bomb: " + pieces[ax][ay].isBomb());
         
+        pieces[ax][ay].setIsOpen(true);
     }
 
     private void generateNewGame() {
         pieces = new Piece[width][height];
+        
+        Random r = new Random();
+        
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                double rn = r.nextDouble();
+                
+                Piece p;
+                
+                
+                if (rn <= difficulty) {
+                    p = new Piece(x, y, true);
+                } else {
+                    p = new Piece(x, y, false);
+                }
+                
+                pieces[x][y] = p;
+            }
+        }
     }
 
-    public void shuffle(int pieceCount) {
-    }
 
     public void clearField() {
         pieces = new Piece[width][height];
     }
     
-    public Piece[][] getPieces() {
+    public static Piece[][] getPieces() {
         return pieces;
     }
 }
