@@ -21,16 +21,14 @@ import mine.sweeper.GameLogic.Graphics.Control;
  * @author daniil.barabashev
  */
 public class MainFormControllerController implements Initializable {
-    
+
     //javafx scene builder 2
-
-    private  Game game = new Game(10, 10, Game.NORMAL);
+    private final Game game = new Game(10, 10, Game.NORMAL);
     private static Control c;
-
 
     @FXML
     Canvas mainCanvas;
-    
+
     @FXML
     private Button button;
 
@@ -43,13 +41,16 @@ public class MainFormControllerController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         c = new Control(mainCanvas);
-        c.setPieces(game.getPieces());
+        c.setPieces(Game.getPieces());
         c.paint();
     }
 
     @FXML
     private void handleMouseClicked(MouseEvent event) {
-        game.canvasClick(event.getX() / mainCanvas.getWidth(), event.getY() / mainCanvas.getHeight());
-    }
+        if (!event.isSecondaryButtonDown()) {
+            game.canvasClick(event.getX() / mainCanvas.getWidth(), event.getY() / mainCanvas.getHeight());
+            c.paint();
+        }
 
+    }
 }

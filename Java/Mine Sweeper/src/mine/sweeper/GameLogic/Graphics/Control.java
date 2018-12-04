@@ -24,15 +24,15 @@ public class Control {
     private GraphicsContext g;
     private static final Color bc = Color.WHITE;
     private Piece[][] pieces;
-    
+
     private double widht;
     private double height;
-    
+
     private double cellWidht;
     private double cellHeight;
-    
-    private double cellWidthLenght;
-    private double cellHeightLenght;
+
+    private double cellWidhtNumber;
+    private double cellHeightNumber;
 
     public Control(Canvas c) {
         this.c = c;
@@ -42,40 +42,63 @@ public class Control {
     }
 
     public void paint() {
+        updatePieces();
         drawBackground();
         drawGrid();
+        drawTiles();
     }
 
-    public void drawMines() {
-        
-
+    private void drawTiles() {
+        for (int x = 0; x < pieces.length; x++) {
+            for (int y = 0; y < pieces[0].length; y++) {
+                drawSpecificTile(pieces[x][y]);
+            }
+        }
     }
-    
+
+    private void drawSpecificTile(Piece p) {
+
+        if (p.isBomb() && p.isIsOpen()) {
+            g.setFill(Color.RED);
+            g.fillRect(p.getX() * cellWidht + 1, p.getY() * cellHeight + 1,
+                    cellWidht - 2, cellHeight - 2);
+        } else if (p.isIsOpen()) {
+            g.setFill(Color.GRAY);
+            g.fillRect(p.getX() * cellWidht + 1, p.getY() * cellHeight + 1,
+                    cellWidht - 2, cellHeight - 2);
+            
+            
+            g.setFill(Color.BLUE);
+            g.fillText("" + p.getNumberOfBombs(), 
+                    p.getX() * cellWidht + cellWidht / 2, p.getY() * cellHeight + cellHeight / 2);
+        }
+    }
+
     private void updatePieces() {
         pieces = Game.getPieces();
     }
-    
+
     private void drawGrid() {
         g.setStroke(Color.BLACK);
         g.setLineWidth(2);
-        
-        for (int x = 0; x <= cellWidthLenght; x++) {
-                g.strokeLine(x * cellWidht, 0, x * cellWidht, height);
+
+        for (int x = 0; x <= cellWidhtNumber; x++) {
+            g.strokeLine(x * cellWidht, 0, x * cellWidht, height);
         }
-        
-        for (int y = 0; y <= cellHeightLenght; y++) {
-                g.strokeLine(0, y * cellHeight, widht, y * cellHeight);
+
+        for (int y = 0; y <= cellHeightNumber; y++) {
+            g.strokeLine(0, y * cellHeight, widht, y * cellHeight);
         }
     }
-    
+
     public void setPieces(Piece[][] pieces) {
         this.pieces = pieces;
-        
-        cellWidthLenght = pieces.length;
-        cellHeightLenght = pieces[0].length;
-        
-        cellWidht = widht / cellWidthLenght;
-        cellHeight = height / cellHeightLenght;
+
+        cellWidhtNumber = pieces.length;
+        cellHeightNumber = pieces[0].length;
+
+        cellWidht = widht / cellWidhtNumber;
+        cellHeight = height / cellHeightNumber;
     }
 
     public void clearCanvas() {

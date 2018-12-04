@@ -12,7 +12,7 @@ package mine.sweeper.GameLogic;
 public class Piece {
     private final boolean isBomb;
     private boolean isOpen =  false;
-    private int numberOfBombs = 0;
+    private int numberOfBombs = 0; //bombs in neighborhood
     private int x;
     private int y;
     
@@ -25,9 +25,7 @@ public class Piece {
     public boolean isBomb() {
         return isBomb;
     }
-    
-    
-    
+        
     public int getNumberOfBombs() {
         return numberOfBombs;
     }
