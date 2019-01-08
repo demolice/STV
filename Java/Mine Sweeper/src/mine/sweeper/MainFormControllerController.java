@@ -23,7 +23,7 @@ import mine.sweeper.GameLogic.Graphics.Control;
 public class MainFormControllerController implements Initializable {
 
     //javafx scene builder 2
-    private final Game game = new Game(10, 10, Game.NORMAL);
+    private final Game game = new Game(10, 10, Game.EASY);
     private static Control c;
 
     @FXML
@@ -47,10 +47,12 @@ public class MainFormControllerController implements Initializable {
 
     @FXML
     private void handleMouseClicked(MouseEvent event) {
+        
         if (!event.isSecondaryButtonDown()) {
             game.canvasClick(event.getX() / mainCanvas.getWidth(), event.getY() / mainCanvas.getHeight());
             c.paint();
         }
+
 
     }
 }
