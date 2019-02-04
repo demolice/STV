@@ -54,7 +54,7 @@ public class FiksCisla {
                     sum += numbers.get(j);
                 }
                 
-                if (result % 2 == 0 && sum % 2 == 0) {
+                if (result % 2 == 0 && sum % 2 == 0  || result % 2 != 0 && sum % 2 != 0) {
                     if (sum  < result) {
                         answers.add(false);
                     } else {
@@ -76,7 +76,7 @@ public class FiksCisla {
     }
     
     private static void generateOutput(){
-        File f = new File("out.txt");
+        File f = new File("outjava.txt");
         
         try {
             PrintWriter w = new PrintWriter(f);

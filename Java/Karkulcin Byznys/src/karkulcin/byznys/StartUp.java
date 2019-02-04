@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 public class StartUp {
 
     static ArrayList<House> houses;
+    static House startHouse;
+    static long stuff;
 
     public static void main(String[] args) {
         houses = new ArrayList<>();
@@ -44,16 +46,18 @@ public class StartUp {
             Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        long stuff = calculateStuff(houses);
-
-        houses.add(new House(startingPoint, stuff, true));
+        stuff = calculateStuff(houses);
 
         long leftNeighbourIndex = findFirstNeighbour(houses, startingPoint);
-        long rightNeighbourIndex = houses.get(((int) leftNeighbourIndex) + 1).getX();
+        long rightNeighbourIndex = leftNeighbourIndex + 1;
 
-        calculateMinimalEnergy(leftNeighbourIndex, startingPoint, rightNeighbourIndex);
+        System.out.println(leftNeighbourIndex + " " + rightNeighbourIndex);
 
-        long totalEnergy = calculateEnergy(houses);
+        startHouse = new House(startingPoint, stuff, true);
+
+        calculateMinimalEnergy(leftNeighbourIndex, rightNeighbourIndex);
+
+        long totalEnergy = calculateEnergy();
 
         generateOutput(totalEnergy);
     }
@@ -64,7 +68,7 @@ public class StartUp {
         for (int index = 0; index < houses.size(); index++) {
             total += houses.get(index).getStuff();
         }
-
+        System.out.println("Stuff: " + total);
         return total;
     }
 
@@ -72,7 +76,7 @@ public class StartUp {
 
         long index = 0;
 
-        for (int pos = 0; pos < 10; pos++) {
+        for (int pos = 0; pos < houses.size(); pos++) {
             House h = houses.get(pos);
             if (h.getX() > startPoint) {
                 index = pos - 1;
@@ -84,49 +88,102 @@ public class StartUp {
         return index;
     }
 
-    private static long calculateEnergy(ArrayList<House> houses) {
+    private static long calculateEnergy() {
         long total = 0;
         for (int i = 0; i < houses.size(); i++) {
-            total += houses.get(i).getStuff();
+            total += houses.get(i).energy;
         }
+        System.out.println("Total: " + total);
         return total;
     }
 
     private static void generateOutput(long totalEnergy) {
+        System.out.println(houses);
         File f = new File("out.txt");
-        try {
-            PrintWriter w = new PrintWriter(f);
+        try (PrintWriter w = new PrintWriter(f)) {
             w.print(totalEnergy);
             w.flush();
-            w.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private static void calculateMinimalEnergy(long leftNeighbourIndex, long startingPoint, long rightNeighbourIndex) {
-        long leftNeighbour = leftNeighbourIndex;
-        long rightNeighbour = rightNeighbourIndex;
+    private static void calculateMinimalEnergy(long leftNeighbourIndex, long rightNeighbourIndex) {
+        int lIndex = (int) leftNeighbourIndex;
+        int rIndex = (int) rightNeighbourIndex;
+         House pitStop = startHouse;
+        System.out.println(lIndex + " " + rIndex);
 
-        for (int i = 0; i < houses.size(); i++) {
-            if (i == 0) {
-                calculateEnergySpend(leftNeighbour, startingPoint);
-                calculateEnergySpend(rightNeighbour, startingPoint);
-            } else {
+        for (int index = 0; index < houses.size() -1; index++) {
+            
+           
+            System.out.println("Index: " + index + " stuff: " + stuff + " pitstop x: " + pitStop.getX());
+            calculateEnergy();
+            
+            
+            House left = houses.get(lIndex);
+            House right = houses.get(rIndex);
+
+
+            long overalDistnace = Math.abs(left.getX() - right.getX());
+
+            long distanceLeft = Math.abs(pitStop.getX() - left.getX()) * stuff + overalDistnace * (stuff - left.getStuff());
+            long distanceRight = Math.abs(pitStop.getX() - right.getX()) * stuff + overalDistnace * (stuff - right.getStuff());
+            System.out.println("Left: " + distanceLeft);
+            System.out.println("Right: " + distanceRight);
+            
+            if (distanceLeft < distanceRight) {
+                left.energy = Math.abs(pitStop.getX() - left.getX()) * stuff;
                 
-            }
+                if (lIndex != 0) {
+                    stuff -= left.getStuff();
+                    lIndex--;
+                    pitStop = left;
+                    
+                } else {
+                    stuff -= right.getStuff();
+                    rIndex++;
+                    pitStop = right;              
+                }
 
-            if (leftNeighbour == 0) {
-                break;
+            } else if (distanceLeft > distanceRight) {
+                right.energy = Math.abs(pitStop.getX() - right.getX()) * stuff;
+                if (rIndex != houses.size() - 1) {
+                    stuff -= right.getStuff();
+                    rIndex++;
+                    pitStop = right;   
+                } else {
+                    stuff -= left.getStuff();
+                    lIndex--;
+                    pitStop = left;             
+                }
+  
+            } 
+            else if (left.getStuff() > right.getStuff()) {
+                left.energy = Math.abs(pitStop.getX() - left.getX()) * stuff;
+                if (lIndex != 0) {
+                    stuff -= left.getStuff();
+                    lIndex--;
+                    pitStop = left;
+                } else {
+                    stuff -= right.getStuff();
+                    rIndex++;
+                    pitStop = right;              
+                }
+       
             } else {
-                leftNeighbour--;
-                rightNeighbour++;
+                right.energy = Math.abs(pitStop.getX() - right.getX()) * stuff;
+                if (rIndex != houses.size() - 1) {
+                    stuff -= right.getStuff();
+                    rIndex++;
+                    pitStop = right;   
+                } else {
+                    stuff -= left.getStuff();
+                    lIndex--;
+                    pitStop = left;             
+                }
             }
         }
-    }
-
-    private static void calculateEnergySpend(long leftNeighbourIndex, long startingPoint) {
-
     }
 }
 
@@ -136,6 +193,7 @@ class House {
     private long stuff;
     private long shortestRouteEnergy;
     private boolean isStartingPoint;
+    public long energy = 0;
 
     public House(long x, long stuff) {
         this.x = x;
@@ -180,7 +238,7 @@ class House {
 
     @Override
     public String toString() {
-        return "x: " + x + " stuff: " + stuff + "\n";
+        return "x: " + x + " stuff: " + stuff + " energy: " + energy + "\n";
     }
 
 }
