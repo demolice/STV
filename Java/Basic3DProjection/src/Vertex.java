@@ -19,12 +19,17 @@ public class Vertex {
         this.z = z;
     }
     
-    public double getViewportX(double viewportDepth, double vertexDepth) {
-        return x * viewportDepth / (z + vertexDepth);
+    public double getViewportX(double viewportDepth, double vertexDepth, double offsetX) {
+        return (x + offsetX) * viewportDepth / (z + vertexDepth);
     }
     
-    public double getViewportY(double viewportDepth, double vertexDepth) {
-        return y * viewportDepth / (z + vertexDepth);
+    public double getViewportY(double viewportDepth, double vertexDepth, double offsetY) {
+        return (y + offsetY) * viewportDepth / (z + vertexDepth);
+    }
+    
+    public void addSin(double x) {
+        this.x += Math.sin(x);
+        this.y += Math.sin(x);   
     }
     
 }
