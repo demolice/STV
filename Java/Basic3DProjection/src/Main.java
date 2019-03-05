@@ -28,7 +28,7 @@ import javafx.util.Duration;
 public class Main extends Application {
 
     private double viewPortDepth = 1.0;
-    private double objectDepth = 5.0;
+    private double objectDepth = 10.0;
 
     private final double width = 1024;
     private final double height = 768;
