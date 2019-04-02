@@ -2,14 +2,15 @@ package maze3d;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 public class MazeMap {
 
     private int width;
     private int height;
 
-    private ArrayList<MazeCell> cells = new ArrayList<MazeCell>();
-    
+    private ArrayList<MazeCell> cells = new ArrayList();
+
     private MazeCell currentCell;
 
     public MazeCell getCurrentCell() {
@@ -44,8 +45,8 @@ public class MazeMap {
     private void connectCells() {
         Random r = new Random();
         for (MazeCell cell : cells) {
-            //int number = r.nextInt(4) + 1;
-            int number = r.nextInt(5);
+            int number = r.nextInt(4) + 1;
+            //int number = r.nextInt(5);
             int x = cell.getX();
             int y = cell.getY();
 
@@ -80,6 +81,110 @@ public class MazeMap {
                     break;
             }
         }
+    }
+
+    public void generateByAdvancedAlgorithm() {
+        cells.clear();
+
+        int x = 0;
+        int y = 0;
+
+        MazeCell lastCell = null;
+
+        Stack<MazeCell> stack = new Stack<MazeCell>();
+
+        do {
+            MazeCell cell = addCell(x, y);
+
+            if (lastCell != null) {
+                int directionX = cell.getX() - lastCell.getX();
+                int directionY = cell.getY() - lastCell.getY();
+
+                if (directionX == 0 && directionY == 1) {
+                    joinNorthSouth(lastCell, cell);
+                }
+                if (directionX == 0 && directionY == -1) {
+                    joinNorthSouth(cell, lastCell);
+                }
+                if (directionX == 1 && directionY == 0) {
+                    joinEastWest(cell, lastCell);
+                }
+                if (directionX == -1 && directionY == 0) {
+                    joinEastWest(lastCell, cell);
+                }
+            }
+
+            boolean canGoNorth;
+            boolean canGoWest;
+            boolean canGoEast;
+            boolean canGoSouth;
+
+            do {
+                x = cell.getX();
+                y = cell.getY();
+
+                canGoNorth = (y > 0) && (findCell(x, y - 1) == null);
+                canGoWest = (x > 0) && (findCell(x - 1, y) == null);
+                canGoEast = (x + 1 < width) && (findCell(x + 1, y) == null);
+                canGoSouth = (y + 1 < height) && (findCell(x, y + 1) == null);
+
+                boolean isBlindPath = !canGoNorth && !canGoSouth && !canGoEast & !canGoWest;
+
+                if (!isBlindPath) {
+                    break;
+                }
+
+                int count = 1;
+                do {
+                    if (stack.empty()) {
+                        return;
+                    }
+
+                    cell = stack.pop();
+                    count--;
+                } while (count > 0);
+
+            } while (true);
+
+            stack.push(cell);
+
+            ArrayList<Character> directions = new ArrayList<Character>();
+
+            if (canGoNorth) {
+                directions.add('N');
+            }
+            if (canGoSouth) {
+                directions.add('S');
+            }
+            if (canGoEast) {
+                directions.add('E');
+            }
+            if (canGoWest) {
+                directions.add('W');
+            }
+
+            Random random = new Random();
+
+            int winningIndex = random.nextInt(directions.size());
+            char winningDirection = directions.get(winningIndex);
+
+            switch (winningDirection) {
+                case 'N':
+                    y = y - 1;
+                    break;
+                case 'S':
+                    y = y + 1;
+                    break;
+                case 'E':
+                    x = x + 1;
+                    break;
+                case 'W':
+                    x = x - 1;
+                    break;
+            }
+
+            lastCell = cell;
+        } while (cells.size() < width * height);
     }
 
     public void generate() {

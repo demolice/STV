@@ -1,6 +1,5 @@
 package maze3d;
 
-
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -14,15 +13,20 @@ import javafx.scene.paint.Color;
 public class MainFormController implements Initializable {
 
     private MazeMap mazeMap = new MazeMap(7, 4);
+    
+    private double stepX = 1;
+    private double stepY = 1;
+
+    private double playerX = 0;
+    private double playerY = 0;
 
     @FXML
     private Canvas canvasMap;
 
     public void onKeyPressed(KeyEvent e) {
         KeyCode code = e.getCode();
-        
+        /*
         MazeCell cell = mazeMap.getCurrentCell();
-        
         switch (code) {
             case UP:
                 MazeCell north = cell.getNorth();
@@ -53,16 +57,33 @@ public class MainFormController implements Initializable {
                 mazeMap.setCurrentCell(east);
                 break;
         }
+        */
         
+        switch (code) {
+            case UP:
+                playerY -= stepY;
+                break;
+            case DOWN:
+                playerY += stepY;
+                break;
+            case LEFT:
+                playerX -= stepX;
+                break;
+            case RIGHT:
+                playerX += stepX;
+                break;
+        }
+        
+
         drawMap();
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mazeMap.generate();
-        
+        mazeMap.generateByAdvancedAlgorithm();
+
         mazeMap.setCurrentCell(mazeMap.findCell(0, 0));
-        
+
         drawMap();
     }
 
@@ -77,7 +98,7 @@ public class MainFormController implements Initializable {
         double cellHeight = canvasHeight / mazeHeight;
 
         GraphicsContext gc = canvasMap.getGraphicsContext2D();
-        
+
         gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
         gc.setFill(Color.BLACK);
@@ -106,18 +127,16 @@ public class MainFormController implements Initializable {
                 if (cell.getEast() == null) {
                     gc.strokeLine(cellX + cellWidth, cellY, cellX + cellWidth, cellY + cellHeight);
                 }
-                
-                if (cell == mazeMap.getCurrentCell()) {
-                    double avatarWidth = cellWidth / 5;
-                    double avatarHeight = cellHeight / 5;
-                    double avatarX = cellX + cellWidth / 2 - avatarWidth / 2;
-                    double avatarY = cellY + cellHeight / 2 - avatarHeight / 2;
-                    
-                    gc.strokeRect(avatarX, avatarY, 20, 20);
-                    
-                    
-                }
+
             }
         }
+
+        double avatarWidth = cellWidth / 5;
+        double avatarHeight = cellHeight / 5;
+        double avatarX = playerX  - avatarWidth / 2;
+        double avatarY = playerY  - avatarHeight / 2;
+
+        gc.strokeRect(avatarX, avatarY, avatarWidth, avatarHeight);
+
     }
 }
