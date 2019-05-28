@@ -76,6 +76,18 @@ public abstract class Actor {
         return true;
     }
 
+    protected MazeMap getMazeMap() {
+        return mazeMap;
+    }
+
+    protected double getX() {
+        return x;
+    }
+
+    protected double getY() {
+        return y;
+    }
+
     public Actor(MazeMap mazeMap) {
         this.mazeMap = mazeMap;
     }
@@ -93,28 +105,23 @@ public abstract class Actor {
 
         double localX = getX() - cell.getX();
         double localY = getY() - cell.getY();
+
         double nextX = localX + offsetX;
         double nextY = localY + offsetY;
 
-        return isMoveAllowed(cell, nextX, nextY);  
+        return isMoveAllowed(cell, nextX, nextY);
     }
-    
 
     public void move(double offsetX, double offsetY) {
         x += offsetX;
         y += offsetY;
     }
 
-    protected MazeMap getMazeMap() {
-        return mazeMap;
+    public boolean tryMove(double offsetX, double offsetY) {
+        if (!canMove(offsetX, offsetY)) {
+            return false;
+        }
+        move(offsetX, offsetY);
+        return true;
     }
-
-    protected double getX() {
-        return x;
-    }
-
-    protected double getY() {
-        return y;
-    }
-
 }

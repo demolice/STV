@@ -6,10 +6,6 @@ import javafx.scene.paint.Color;
 
 public class Player extends Actor {
 
-    public Player(MazeMap mazeMap) {
-        super(mazeMap);
-    }
-
     @Override
     protected double getAvatarWidth() {
         return 0.25;
@@ -20,27 +16,33 @@ public class Player extends Actor {
         return 0.25;
     }
 
+    public Player(MazeMap mazeMap) {
+        super(mazeMap);
+    }
+
     @Override
     public void draw(GraphicsContext gc) {
         Canvas canvas = gc.getCanvas();
-        
         double canvasWidth = canvas.getWidth();
         double canvasHeight = canvas.getHeight();
-        
-        double mazeWidth = getMazeMap().getWidth();
-        double mazeHeight = getMazeMap().getHeight();
-        
+
+        MazeMap mazeMap = getMazeMap();
+        double mazeWidth = mazeMap.getWidth();
+        double mazeHeight = mazeMap.getHeight();
+
         double cellWidth = canvasWidth / mazeWidth;
         double cellHeight = canvasHeight / mazeHeight;
-        
+
         double avatarWidth = getAvatarWidth();
         double avatarHeight = getAvatarHeight();
-        
-        double avatarX = (getX() - (avatarWidth / 2)) * cellWidth;
-        double avatarY = (getY() - (avatarHeight / 2)) * cellHeight;
-        
+
+        double x = getX();
+        double y = getY();
+
+        double avatarX = (x - (avatarWidth / 2)) * cellWidth;
+        double avatarY = (y - (avatarHeight / 2)) * cellHeight;
+
         gc.setFill(Color.BLUE);
-        
         gc.fillRect(avatarX, avatarY, avatarWidth * cellWidth, avatarHeight * cellHeight);
     }
 }

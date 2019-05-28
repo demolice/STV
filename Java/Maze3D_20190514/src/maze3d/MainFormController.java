@@ -18,14 +18,16 @@ import javafx.util.Duration;
 
 public class MainFormController implements Initializable {
 
+    private final double monsterStep = 0.01;
+
     private final double stepX = 0.05;
     private final double stepY = 0.05;
 
     private final MazeMap mazeMap = new MazeMap(20, 20);
-    
-    private final ArrayList<Monster> monsters = new ArrayList<>();
 
     private Player player;
+
+    private final ArrayList<Monster> monsters = new ArrayList<Monster>();
 
     @FXML
     private Canvas canvasMap;
@@ -74,27 +76,21 @@ public class MainFormController implements Initializable {
         if (isKeyPressed(KeyCode.RIGHT)) {
             offsetX = +stepX;
         }
-         
-        // player.canMove();
+
         if (!player.canMove(offsetX, offsetY)) {
             return;
         }
 
         player.move(offsetX, offsetY);
     }
-    
-    private void moveMonster() {
-       for (Monster monster : monsters) {
-           double offsetX = stepX * Math.random() * 2 - 1;
-           double offsetY = stepY * Math.random() * 2 - 1;
-           
-           if (monster.canMove(offsetX, offsetY))
-               monster.move(offsetX, offsetY);
-           
-           monster.move(offsetX, offsetY); //CHYBA CHYBA
-       }
+
+    private void moveMonsters() {
+        for (Monster monster : monsters) {
+            if (!monster.tryMoveToTarget(monsterStep)) {
+                monster.randomizeTarget();
+            }
+        }
     }
-        
 
     private double getCellWidth() {
         return canvasMap.getWidth() / mazeMap.getWidth();
@@ -110,16 +106,21 @@ public class MainFormController implements Initializable {
 
         player = new Player(mazeMap);
         player.move(0.5, 0.5);
-        
-        Monster monster = new Monster(mazeMap);
-        monster.move(9.5, 9.5);
-        monsters.add(monster);
-        
+
+        for (int index = 0; index < 1; index++) {
+            double offsetX = Math.floor(Math.random() * mazeMap.getWidth()) + 0.5;
+            double offsetY = Math.floor(Math.random() * mazeMap.getHeight()) + 0.5;
+
+            Monster monster = new Monster(mazeMap);
+            monster.move(offsetX, offsetY);
+            monster.randomizeTarget();
+            monsters.add(monster);
+        }
 
         EventHandler<ActionEvent> timingHandler = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 movePlayer();
-                moveMonster();
+                moveMonsters();
                 drawMap();
             }
         };
@@ -165,9 +166,9 @@ public class MainFormController implements Initializable {
         }
 
         player.draw(gc);
-        
-        monsters.forEach((monster) -> {
+
+        for (Monster monster : monsters) {
             monster.draw(gc);
-        });
+        }
     }
 }
