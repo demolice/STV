@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 public class Monster extends Actor {
 
-    private final double targetArea = 1;
+    private final double targetArea = 2;
 
     private double targetX;
     private double targetY;
@@ -35,8 +35,15 @@ public class Monster extends Actor {
     }
 
     public void randomizeTarget() {
+        double distanceX = getMazeMap().getPlayer().getX() - getX();
+        double distanceY = getMazeMap().getPlayer().getY() - getY();
+
+        double distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
         targetX = getX() + (Math.random() - 0.5) * targetArea;
         targetY = getY() + (Math.random() - 0.5) * targetArea;
+
+        System.out.printf("Nová cílová poloha: [%f ; %f]\n", targetX, targetY);
     }
 
     public boolean tryMoveToTarget(double step) {
@@ -48,7 +55,7 @@ public class Monster extends Actor {
         double deltaY = targetY - getY();
 
         if (deltaX != 0) {
-            double k = deltaY / deltaX;
+            double k = Math.abs(deltaY / deltaX);
             double dx = step / Math.sqrt(1 + k * k);
             double dy = k * dx;
 
@@ -89,7 +96,13 @@ public class Monster extends Actor {
         double avatarX = (x - (avatarWidth / 2)) * cellWidth;
         double avatarY = (y - (avatarHeight / 2)) * cellHeight;
 
+        double pointX = (targetX - (avatarWidth / 2)) * cellWidth;
+        double pointY = (targetY - (avatarHeight / 2)) * cellHeight;
+
         gc.setFill(Color.BROWN);
         gc.fillRect(avatarX, avatarY, avatarWidth * cellWidth, avatarHeight * cellHeight);
+
+        gc.setFill(Color.GREEN);
+        gc.fillOval(pointX, pointY, avatarWidth * cellWidth, avatarHeight * cellHeight);
     }
 }
